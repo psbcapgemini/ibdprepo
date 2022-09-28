@@ -1,0 +1,3334 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "8127639514887243763"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the location for all resources."
+      }
+    },
+    "environment": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the environment of the deployment."
+      },
+      "allowedValues": [
+        "dev",
+        "tst",
+        "prd"
+      ]
+    },
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the prefix for all resources created in this deployment."
+      },
+      "maxLength": 10,
+      "minLength": 2
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Specifies the tags that you want to apply to all resources."
+      }
+    },
+    "sqlFlavour": {
+      "type": "string",
+      "defaultValue": "sql",
+      "metadata": {
+        "description": "Specifies the sql flavour that will be deployed (None, SQL Server, MySQL Server, MariaDB Server, PostgreSQL Server)."
+      },
+      "allowedValues": [
+        "none",
+        "sql",
+        "mysql",
+        "maria",
+        "postgre"
+      ]
+    },
+    "administratorPassword": {
+      "type": "secureString",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the administrator password of the sql servers and synapse workspace."
+      }
+    },
+    "processingService": {
+      "type": "string",
+      "defaultValue": "dataFactory",
+      "metadata": {
+        "description": "Specifies the data engineering service that will be deployed (Data Factory, Synapse)."
+      },
+      "allowedValues": [
+        "dataFactory",
+        "synapse"
+      ]
+    },
+    "synapseDefaultStorageAccountFileSystemId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the default storage account file system for Synapse. If you selected dataFactory as processingService, leave this value empty as is."
+      }
+    },
+    "enableSqlPool": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Specifies whether an Azure SQL Pool should be deployed inside your Synapse workspace as part of the template. If you selected dataFactory as processingService, leave this value as is."
+      }
+    },
+    "enableCosmos": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Specifies whether Azure Cosmos DB should be deployed as part of the template."
+      }
+    },
+    "purviewId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the central Purview instance."
+      }
+    },
+    "purviewManagedStorageId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the managed storage account of the central Purview instance."
+      }
+    },
+    "purviewManagedEventHubId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the managed Event Hub of the central Purview instance."
+      }
+    },
+    "enableRoleAssignments": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Specifies whether role assignments should be enabled."
+      }
+    },
+    "enableMonitoring": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Specifies whether monitoring capabilities should be enabled."
+      }
+    },
+    "dataProductTeamEmail": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the email ID of the alerts receiver."
+      }
+    },
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the resource ID of the subnet to which all services will connect."
+      }
+    },
+    "privateDnsZoneIdKeyVault": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for KeyVault."
+      }
+    },
+    "privateDnsZoneIdSynapseDev": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Synapse Dev."
+      }
+    },
+    "privateDnsZoneIdSynapseSql": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Synapse Sql."
+      }
+    },
+    "privateDnsZoneIdDataFactory": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Data Factory."
+      }
+    },
+    "privateDnsZoneIdDataFactoryPortal": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Data Factory Portal."
+      }
+    },
+    "privateDnsZoneIdCosmosdbSql": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Cosmos Sql."
+      }
+    },
+    "privateDnsZoneIdSqlServer": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for Sql Server."
+      }
+    },
+    "privateDnsZoneIdMySqlServer": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for MySql Server."
+      }
+    },
+    "privateDnsZoneIdMariaDb": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for MariaDB."
+      }
+    },
+    "privateDnsZoneIdPostgreSql": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource ID of the private DNS zone for PostgreSql."
+      }
+    }
+  },
+  "variables": {
+    "name": "[toLower(format('{0}-{1}', parameters('prefix'), parameters('environment')))]",
+    "tagsDefault": {
+      "Owner": "Data Management and Analytics Scenario",
+      "Project": "Data Management and Analytics Scenario",
+      "Environment": "[parameters('environment')]",
+      "Toolkit": "bicep",
+      "Name": "[variables('name')]"
+    },
+    "tagsJoined": "[union(variables('tagsDefault'), parameters('tags'))]",
+    "administratorUsername": "SqlMainUser",
+    "synapseDefaultStorageAccountSubscriptionId": "[if(greaterOrEquals(length(split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')), 13), split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')[2], subscription().subscriptionId)]",
+    "synapseDefaultStorageAccountResourceGroupName": "[if(greaterOrEquals(length(split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')), 13), split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')[4], resourceGroup().name)]",
+    "keyVault001Name": "[format('{0}-vault001', variables('name'))]",
+    "synapse001Name": "[format('{0}-synapse001', variables('name'))]",
+    "datafactory001Name": "[format('{0}-datafactory001', variables('name'))]",
+    "cosmosdb001Name": "[format('{0}-cosmos001', variables('name'))]",
+    "database001Name": "Database001",
+    "sql001Name": "[format('{0}-sqlserver001', variables('name'))]",
+    "mysql001Name": "[format('{0}-mysql001', variables('name'))]",
+    "mariadb001Name": "[format('{0}-mariadb001', variables('name'))]",
+    "potsgresql001Name": "[format('{0}-postgresql001', variables('name'))]",
+    "logAnalytics001Name": "[format('{0}-loganalytics001', variables('name'))]",
+    "dataFactoryEmailActionGroup": "[format('{0}-emailactiongroup', variables('datafactory001Name'))]",
+    "adfPipelineFailedAlertName": "[format('{0}-failedalert', variables('datafactory001Name'))]",
+    "synapsePipelineFailedAlertName": "[format('{0}-failedalert', variables('synapse001Name'))]",
+    "cosmosRequestLimitedAlertName": "[format('{0}-requestratealert', variables('cosmosdb001Name'))]",
+    "dashboardName": "[format('{0}-dashboard', variables('name'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "keyVault001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "keyvaultName": {
+            "value": "[variables('keyVault001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "privateDnsZoneIdKeyVault": {
+            "value": "[parameters('privateDnsZoneIdKeyVault')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "10481042174545864292"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "keyvaultName": {
+              "type": "string"
+            },
+            "privateDnsZoneIdKeyVault": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "keyVaultPrivateEndpointName": "[format('{0}-private-endpoint', parameters('keyvaultName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2021-11-01-preview",
+              "name": "[parameters('keyvaultName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "accessPolicies": [],
+                "createMode": "default",
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false,
+                "enablePurgeProtection": true,
+                "enableRbacAuthorization": true,
+                "enableSoftDelete": true,
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "defaultAction": "Deny",
+                  "ipRules": [],
+                  "virtualNetworkRules": []
+                },
+                "sku": {
+                  "family": "A",
+                  "name": "standard"
+                },
+                "softDeleteRetentionInDays": 7,
+                "tenantId": "[subscription().tenantId]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('keyVaultPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('keyVaultPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "vault"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyvaultName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyvaultName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdKeyVault')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('keyVaultPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('keyVaultPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdKeyVault')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('keyVaultPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "keyvaultId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyvaultName'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('processingService'), 'synapse')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "synapse001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "synapseName": {
+            "value": "[variables('synapse001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "administratorUsername": {
+            "value": "[variables('administratorUsername')]"
+          },
+          "administratorPassword": {
+            "value": "[parameters('administratorPassword')]"
+          },
+          "synapseSqlAdminGroupName": {
+            "value": ""
+          },
+          "synapseSqlAdminGroupObjectID": {
+            "value": ""
+          },
+          "privateDnsZoneIdSynapseDev": {
+            "value": "[parameters('privateDnsZoneIdSynapseDev')]"
+          },
+          "privateDnsZoneIdSynapseSql": {
+            "value": "[parameters('privateDnsZoneIdSynapseSql')]"
+          },
+          "purviewId": {
+            "value": "[parameters('purviewId')]"
+          },
+          "enableSqlPool": {
+            "value": "[parameters('enableSqlPool')]"
+          },
+          "synapseComputeSubnetId": {
+            "value": ""
+          },
+          "synapseDefaultStorageAccountFileSystemId": {
+            "value": "[parameters('synapseDefaultStorageAccountFileSystemId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "11669417181826602990"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "synapseName": {
+              "type": "string"
+            },
+            "administratorUsername": {
+              "type": "string",
+              "defaultValue": "SqlMainUser"
+            },
+            "administratorPassword": {
+              "type": "secureString"
+            },
+            "synapseSqlAdminGroupName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "synapseSqlAdminGroupObjectID": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "synapseDefaultStorageAccountFileSystemId": {
+              "type": "string"
+            },
+            "synapseComputeSubnetId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdSynapseSql": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdSynapseDev": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "purviewId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "enableSqlPool": {
+              "type": "bool",
+              "defaultValue": false
+            }
+          },
+          "variables": {
+            "synapseDefaultStorageAccountFileSystemName": "[if(greaterOrEquals(length(split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')), 13), last(split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')), 'incorrectSegmentLength')]",
+            "synapseDefaultStorageAccountName": "[if(greaterOrEquals(length(split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')), 13), split(parameters('synapseDefaultStorageAccountFileSystemId'), '/')[8], 'incorrectSegmentLength')]",
+            "synapsePrivateEndpointNameSql": "[format('{0}-sql-private-endpoint', parameters('synapseName'))]",
+            "synapsePrivateEndpointNameSqlOnDemand": "[format('{0}-sqlondemand-private-endpoint', parameters('synapseName'))]",
+            "synapsePrivateEndpointNameDev": "[format('{0}-dev-private-endpoint', parameters('synapseName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Synapse/workspaces",
+              "apiVersion": "2021-03-01",
+              "name": "[parameters('synapseName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "defaultDataLakeStorage": {
+                  "accountUrl": "[format('https://{0}.dfs.{1}', variables('synapseDefaultStorageAccountName'), environment().suffixes.storage)]",
+                  "filesystem": "[variables('synapseDefaultStorageAccountFileSystemName')]"
+                },
+                "managedResourceGroupName": "[parameters('synapseName')]",
+                "managedVirtualNetwork": "default",
+                "managedVirtualNetworkSettings": {
+                  "allowedAadTenantIdsForLinking": [],
+                  "linkedAccessCheckOnTargetResource": true,
+                  "preventDataExfiltration": true
+                },
+                "publicNetworkAccess": "Disabled",
+                "purviewConfiguration": {
+                  "purviewResourceId": "[parameters('purviewId')]"
+                },
+                "sqlAdministratorLogin": "[parameters('administratorUsername')]",
+                "sqlAdministratorLoginPassword": "[parameters('administratorPassword')]",
+                "virtualNetworkProfile": {
+                  "computeSubnetId": "[parameters('synapseComputeSubnetId')]"
+                }
+              }
+            },
+            {
+              "condition": "[parameters('enableSqlPool')]",
+              "type": "Microsoft.Synapse/workspaces/sqlPools",
+              "apiVersion": "2021-03-01",
+              "name": "[format('{0}/{1}', parameters('synapseName'), 'sqlPool001')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "DW100c"
+              },
+              "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "createMode": "Default",
+                "storageAccountType": "GRS"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Synapse/workspaces/bigDataPools",
+              "apiVersion": "2021-03-01",
+              "name": "[format('{0}/{1}', parameters('synapseName'), 'bigDataPool001')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "autoPause": {
+                  "enabled": true,
+                  "delayInMinutes": 15
+                },
+                "autoScale": {
+                  "enabled": true,
+                  "minNodeCount": 3,
+                  "maxNodeCount": 10
+                },
+                "customLibraries": [],
+                "defaultSparkLogFolder": "logs/",
+                "dynamicExecutorAllocation": {
+                  "enabled": true,
+                  "minExecutors": 1,
+                  "maxExecutors": 9
+                },
+                "nodeSize": "Small",
+                "nodeSizeFamily": "MemoryOptimized",
+                "sessionLevelPackagesEnabled": true,
+                "sparkEventsFolder": "events/",
+                "sparkVersion": "3.1"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Synapse/workspaces/managedIdentitySqlControlSettings",
+              "apiVersion": "2021-03-01",
+              "name": "[format('{0}/{1}', parameters('synapseName'), 'default')]",
+              "properties": {
+                "grantSqlControlToManagedIdentity": {
+                  "desiredState": "Enabled"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "condition": "[and(not(empty(parameters('synapseSqlAdminGroupName'))), not(empty(parameters('synapseSqlAdminGroupObjectID'))))]",
+              "type": "Microsoft.Synapse/workspaces/administrators",
+              "apiVersion": "2021-03-01",
+              "name": "[format('{0}/{1}', parameters('synapseName'), 'activeDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "[parameters('synapseSqlAdminGroupName')]",
+                "sid": "[parameters('synapseSqlAdminGroupObjectID')]",
+                "tenantId": "[subscription().tenantId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('synapsePrivateEndpointNameSql')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('synapsePrivateEndpointNameSql')]",
+                    "properties": {
+                      "groupIds": [
+                        "Sql"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdSynapseSql')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('synapsePrivateEndpointNameSql'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('synapsePrivateEndpointNameSql'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdSynapseSql')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('synapsePrivateEndpointNameSql'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('synapsePrivateEndpointNameSqlOnDemand')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('synapsePrivateEndpointNameSqlOnDemand')]",
+                    "properties": {
+                      "groupIds": [
+                        "SqlOnDemand"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdSynapseSql')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('synapsePrivateEndpointNameSqlOnDemand'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('synapsePrivateEndpointNameSqlOnDemand'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdSynapseSql')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('synapsePrivateEndpointNameSqlOnDemand'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('synapsePrivateEndpointNameDev')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('synapsePrivateEndpointNameDev')]",
+                    "properties": {
+                      "groupIds": [
+                        "Dev"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdSynapseDev')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('synapsePrivateEndpointNameDev'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('synapsePrivateEndpointNameDev'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdSynapseDev')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('synapsePrivateEndpointNameDev'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "synapseId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Synapse/workspaces', parameters('synapseName'))]"
+            },
+            "synapseName": {
+              "type": "string",
+              "value": "[parameters('synapseName')]"
+            },
+            "synapseBigDataPool001Id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('synapseName'), 'bigDataPool001')]"
+            },
+            "synapseBigDataPool001Name": {
+              "type": "string",
+              "value": "bigDataPool001"
+            },
+            "synapseSqlPool001Name": {
+              "type": "string",
+              "value": "sqlPool001"
+            },
+            "synapseSqlPool001Id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Synapse/workspaces/sqlPools', parameters('synapseName'), 'sqlPool001')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[and(equals(parameters('processingService'), 'synapse'), parameters('enableRoleAssignments'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "synapse001RoleAssignmentStorage",
+      "subscriptionId": "[variables('synapseDefaultStorageAccountSubscriptionId')]",
+      "resourceGroup": "[variables('synapseDefaultStorageAccountResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountFileSystemId": {
+            "value": "[parameters('synapseDefaultStorageAccountFileSystemId')]"
+          },
+          "synapseId": {
+            "value": "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseId.value, '')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "10481417171219687804"
+            }
+          },
+          "parameters": {
+            "storageAccountFileSystemId": {
+              "type": "string"
+            },
+            "synapseId": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "storageAccountFileSystemName": "[if(greaterOrEquals(length(split(parameters('storageAccountFileSystemId'), '/')), 13), last(split(parameters('storageAccountFileSystemId'), '/')), 'incorrectSegmentLength')]",
+            "storageAccountName": "[if(greaterOrEquals(length(split(parameters('storageAccountFileSystemId'), '/')), 13), split(parameters('storageAccountFileSystemId'), '/')[8], 'incorrectSegmentLength')]",
+            "synapseSubscriptionId": "[if(greaterOrEquals(length(split(parameters('synapseId'), '/')), 9), split(parameters('synapseId'), '/')[2], subscription().subscriptionId)]",
+            "synapseResourceGroupName": "[if(greaterOrEquals(length(split(parameters('synapseId'), '/')), 9), split(parameters('synapseId'), '/')[4], resourceGroup().name)]",
+            "synapseName": "[if(greaterOrEquals(length(split(parameters('synapseId'), '/')), 9), last(split(parameters('synapseId'), '/')), 'incorrectSegmentLength')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-04-01-preview",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[2])]",
+              "name": "[guid(uniqueString(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[0], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[1], split(format('{0}/default/{1}', variables('storageAccountName'), variables('storageAccountFileSystemName')), '/')[2]), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('synapseSubscriptionId'), variables('synapseResourceGroupName')), 'Microsoft.Synapse/workspaces', variables('synapseName'))))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('synapseSubscriptionId'), variables('synapseResourceGroupName')), 'Microsoft.Synapse/workspaces', variables('synapseName')), '2021-03-01', 'full').identity.principalId]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'synapse001')]"
+      ]
+    },
+    {
+      "condition": "[equals(parameters('processingService'), 'dataFactory')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "datafactory001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "datafactoryName": {
+            "value": "[variables('datafactory001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "keyVault001Id": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'keyVault001')).outputs.keyvaultId.value]"
+          },
+          "privateDnsZoneIdDataFactory": {
+            "value": "[parameters('privateDnsZoneIdDataFactory')]"
+          },
+          "privateDnsZoneIdDataFactoryPortal": {
+            "value": "[parameters('privateDnsZoneIdDataFactoryPortal')]"
+          },
+          "purviewId": {
+            "value": "[parameters('purviewId')]"
+          },
+          "purviewManagedStorageId": {
+            "value": "[parameters('purviewManagedStorageId')]"
+          },
+          "purviewManagedEventHubId": {
+            "value": "[parameters('purviewManagedEventHubId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "1792165604666069858"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "datafactoryName": {
+              "type": "string"
+            },
+            "keyVault001Id": {
+              "type": "string"
+            },
+            "privateDnsZoneIdDataFactory": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdDataFactoryPortal": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "purviewId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "purviewManagedStorageId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "purviewManagedEventHubId": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "keyVault001Name": "[if(greaterOrEquals(length(split(parameters('keyVault001Id'), '/')), 9), last(split(parameters('keyVault001Id'), '/')), 'incorrectSegmentLength')]",
+            "datafactoryDefaultManagedVnetIntegrationRuntimeName": "AutoResolveIntegrationRuntime",
+            "datafactoryPrivateEndpointNameDatafactory": "[format('{0}-datafactory-private-endpoint', parameters('datafactoryName'))]",
+            "datafactoryPrivateEndpointNamePortal": "[format('{0}-portal-private-endpoint', parameters('datafactoryName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DataFactory/factories",
+              "apiVersion": "2018-06-01",
+              "name": "[parameters('datafactoryName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "globalParameters": {},
+                "publicNetworkAccess": "Disabled",
+                "purviewConfiguration": {
+                  "purviewResourceId": "[parameters('purviewId')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}', parameters('datafactoryName'), 'default')]",
+              "properties": {},
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}', parameters('datafactoryName'), variables('datafactoryDefaultManagedVnetIntegrationRuntimeName'))]",
+              "properties": {
+                "type": "Managed",
+                "managedVirtualNetwork": {
+                  "type": "ManagedVirtualNetworkReference",
+                  "referenceName": "default"
+                },
+                "typeProperties": {
+                  "computeProperties": {
+                    "location": "AutoResolve"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]",
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('purviewId')))]",
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('datafactoryName'), 'default', 'Purview')]",
+              "properties": {
+                "fqdns": [],
+                "groupId": "account",
+                "privateLinkResourceId": "[parameters('purviewId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('purviewManagedStorageId')))]",
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('datafactoryName'), 'default', 'Purview_blob')]",
+              "properties": {
+                "fqdns": [],
+                "groupId": "blob",
+                "privateLinkResourceId": "[parameters('purviewManagedStorageId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('purviewManagedStorageId')))]",
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('datafactoryName'), 'default', 'Purview_queue')]",
+              "properties": {
+                "fqdns": [],
+                "groupId": "queue",
+                "privateLinkResourceId": "[parameters('purviewManagedStorageId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('purviewManagedEventHubId')))]",
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('datafactoryName'), 'default', 'Purview_namespace')]",
+              "properties": {
+                "fqdns": [],
+                "groupId": "namespace",
+                "privateLinkResourceId": "[parameters('purviewManagedEventHubId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('datafactoryName'), 'default', replace(variables('keyVault001Name'), '-', ''))]",
+              "properties": {
+                "fqdns": [],
+                "groupId": "vault",
+                "privateLinkResourceId": "[parameters('keyVault001Id')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories/managedVirtualNetworks', parameters('datafactoryName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.DataFactory/factories/linkedservices",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}', parameters('datafactoryName'), replace(variables('keyVault001Name'), '-', ''))]",
+              "properties": {
+                "type": "AzureKeyVault",
+                "annotations": [],
+                "connectVia": {
+                  "type": "IntegrationRuntimeReference",
+                  "referenceName": "[variables('datafactoryDefaultManagedVnetIntegrationRuntimeName')]",
+                  "parameters": {}
+                },
+                "description": "Key Vault for storing secrets",
+                "parameters": {},
+                "typeProperties": {
+                  "baseUrl": "[format('https://{0}{1}/', variables('keyVault001Name'), environment().suffixes.keyvaultDns)]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]",
+                "[resourceId('Microsoft.DataFactory/factories/integrationRuntimes', parameters('datafactoryName'), variables('datafactoryDefaultManagedVnetIntegrationRuntimeName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('datafactoryPrivateEndpointNameDatafactory')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('datafactoryPrivateEndpointNameDatafactory')]",
+                    "properties": {
+                      "groupIds": [
+                        "dataFactory"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdDataFactory')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('datafactoryPrivateEndpointNameDatafactory'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('datafactoryPrivateEndpointNameDatafactory'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdDataFactory')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('datafactoryPrivateEndpointNameDatafactory'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('datafactoryPrivateEndpointNamePortal')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('datafactoryPrivateEndpointNamePortal')]",
+                    "properties": {
+                      "groupIds": [
+                        "portal"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdDataFactoryPortal')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('datafactoryPrivateEndpointNamePortal'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('datafactoryPrivateEndpointNamePortal'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdDataFactoryPortal')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('datafactoryPrivateEndpointNamePortal'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "dataFactoryId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DataFactory/factories', parameters('datafactoryName'))]"
+            },
+            "dataFactoryName": {
+              "type": "string",
+              "value": "[parameters('datafactoryName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'keyVault001')]"
+      ]
+    },
+    {
+      "condition": "[parameters('enableCosmos')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "cosmos001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "cosmosdbName": {
+            "value": "[variables('cosmosdb001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "privateDnsZoneIdCosmosdbSql": {
+            "value": "[parameters('privateDnsZoneIdCosmosdbSql')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "14831264449214122851"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "cosmosdbName": {
+              "type": "string"
+            },
+            "privateDnsZoneIdCosmosdbSql": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "cosmosdbPrivateEndpointName": "[format('{0}-private-endpoint', parameters('cosmosdbName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2021-03-15",
+              "name": "[parameters('cosmosdbName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "kind": "GlobalDocumentDB",
+              "properties": {
+                "backupPolicy": {
+                  "type": "Continuous"
+                },
+                "capabilities": [],
+                "consistencyPolicy": {
+                  "defaultConsistencyLevel": "Eventual",
+                  "maxStalenessPrefix": 1,
+                  "maxIntervalInSeconds": 5
+                },
+                "cors": [],
+                "databaseAccountOfferType": "Standard",
+                "disableKeyBasedMetadataWriteAccess": true,
+                "enableAnalyticalStorage": false,
+                "enableAutomaticFailover": true,
+                "enableCassandraConnector": false,
+                "enableFreeTier": false,
+                "enableMultipleWriteLocations": false,
+                "ipRules": [],
+                "networkAclBypass": "None",
+                "networkAclBypassResourceIds": [],
+                "publicNetworkAccess": "Disabled",
+                "virtualNetworkRules": [],
+                "isVirtualNetworkFilterEnabled": true,
+                "locations": [
+                  {
+                    "locationName": "[parameters('location')]",
+                    "failoverPriority": 0,
+                    "isZoneRedundant": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('cosmosdbPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('cosmosdbPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "sql"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosdbName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosdbName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdCosmosdbSql')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('cosmosdbPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('cosmosdbPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdCosmosdbSql')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('cosmosdbPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "cosmosId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosdbName'))]"
+            },
+            "cosmosName": {
+              "type": "string",
+              "value": "[parameters('cosmosdbName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('sqlFlavour'), 'sql')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "sql001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "sqlserverName": {
+            "value": "[variables('sql001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "administratorUsername": {
+            "value": "[variables('administratorUsername')]"
+          },
+          "administratorPassword": {
+            "value": "[parameters('administratorPassword')]"
+          },
+          "privateDnsZoneIdSqlServer": {
+            "value": "[parameters('privateDnsZoneIdSqlServer')]"
+          },
+          "database001Name": {
+            "value": "[variables('database001Name')]"
+          },
+          "sqlserverAdminGroupName": {
+            "value": ""
+          },
+          "sqlserverAdminGroupObjectID": {
+            "value": ""
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "12271990852463133658"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "sqlserverName": {
+              "type": "string"
+            },
+            "administratorUsername": {
+              "type": "string",
+              "defaultValue": "SqlMainUser"
+            },
+            "administratorPassword": {
+              "type": "secureString"
+            },
+            "sqlserverAdminGroupName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "sqlserverAdminGroupObjectID": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdSqlServer": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "database001Name": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "sqlserverPrivateEndpointName": "[format('{0}-private-endpoint', parameters('sqlserverName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2020-11-01-preview",
+              "name": "[parameters('sqlserverName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "administratorLogin": "[parameters('administratorUsername')]",
+                "administratorLoginPassword": "[parameters('administratorPassword')]",
+                "administrators": {},
+                "minimalTlsVersion": "1.2",
+                "publicNetworkAccess": "Disabled",
+                "version": "12.0"
+              }
+            },
+            {
+              "condition": "[and(not(empty(parameters('sqlserverAdminGroupName'))), not(empty(parameters('sqlserverAdminGroupObjectID'))))]",
+              "type": "Microsoft.Sql/servers/administrators",
+              "apiVersion": "2020-11-01-preview",
+              "name": "[format('{0}/{1}', parameters('sqlserverName'), 'ActiveDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "[parameters('sqlserverAdminGroupName')]",
+                "sid": "[parameters('sqlserverAdminGroupObjectID')]",
+                "tenantId": "[subscription().tenantId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlserverName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Sql/servers/databases",
+              "apiVersion": "2020-11-01-preview",
+              "name": "[format('{0}/{1}', parameters('sqlserverName'), parameters('database001Name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 5
+              },
+              "properties": {
+                "autoPauseDelay": -1,
+                "catalogCollation": "DATABASE_DEFAULT",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "createMode": "Default",
+                "readScale": "Disabled",
+                "highAvailabilityReplicaCount": 0,
+                "licenseType": "LicenseIncluded",
+                "maxSizeBytes": 524288000,
+                "minCapacity": 1,
+                "requestedBackupStorageRedundancy": "Geo",
+                "zoneRedundant": false
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlserverName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('sqlserverPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('sqlserverPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "sqlServer"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.Sql/servers', parameters('sqlserverName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlserverName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdSqlServer')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('sqlserverPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('sqlserverPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdSqlServer')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('sqlserverPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "sqlserverName": {
+              "type": "string",
+              "value": "[parameters('sqlserverName')]"
+            },
+            "sqlserverDatabase001Name": {
+              "type": "string",
+              "value": "[parameters('database001Name')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('sqlFlavour'), 'mysql')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "mysql001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "mysqlserverName": {
+            "value": "[variables('mysql001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "administratorUsername": {
+            "value": "[variables('administratorUsername')]"
+          },
+          "administratorPassword": {
+            "value": "[parameters('administratorPassword')]"
+          },
+          "privateDnsZoneIdMySqlServer": {
+            "value": "[parameters('privateDnsZoneIdMySqlServer')]"
+          },
+          "mysqlserverAdminGroupName": {
+            "value": ""
+          },
+          "mysqlserverAdminGroupObjectID": {
+            "value": ""
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "5265715090830928459"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "mysqlserverName": {
+              "type": "string"
+            },
+            "administratorUsername": {
+              "type": "string",
+              "defaultValue": "SqlMainUser"
+            },
+            "administratorPassword": {
+              "type": "secureString"
+            },
+            "mysqlserverAdminGroupName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "mysqlserverAdminGroupObjectID": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdMySqlServer": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "mysqlserverPrivateEndpointName": "[format('{0}-private-endpoint', parameters('mysqlserverName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforMySQL/servers",
+              "apiVersion": "2017-12-01",
+              "name": "[parameters('mysqlserverName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "sku": {
+                "name": "GP_Gen5_2",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 2,
+                "size": "5120"
+              },
+              "properties": {
+                "administratorLogin": "[parameters('administratorUsername')]",
+                "administratorLoginPassword": "[parameters('administratorPassword')]",
+                "createMode": "Default",
+                "infrastructureEncryption": "Disabled",
+                "minimalTlsVersion": "TLS1_2",
+                "publicNetworkAccess": "Disabled",
+                "sslEnforcement": "Enabled",
+                "storageProfile": {
+                  "backupRetentionDays": 7,
+                  "geoRedundantBackup": "Enabled",
+                  "storageAutogrow": "Enabled",
+                  "storageMB": 5120
+                },
+                "version": "5.7"
+              }
+            },
+            {
+              "condition": "[and(not(empty(parameters('mysqlserverAdminGroupName'))), not(empty(parameters('mysqlserverAdminGroupObjectID'))))]",
+              "type": "Microsoft.DBforMySQL/servers/administrators",
+              "apiVersion": "2017-12-01",
+              "name": "[format('{0}/{1}', parameters('mysqlserverName'), 'activeDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "[parameters('mysqlserverAdminGroupName')]",
+                "sid": "[parameters('mysqlserverAdminGroupObjectID')]",
+                "tenantId": "[subscription().tenantId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforMySQL/servers', parameters('mysqlserverName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DBforMySQL/servers/databases",
+              "apiVersion": "2017-12-01",
+              "name": "[format('{0}/{1}', parameters('mysqlserverName'), 'Database001')]",
+              "properties": {
+                "charset": "utf8",
+                "collation": "utf8_general_ci"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforMySQL/servers', parameters('mysqlserverName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('mysqlserverPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('mysqlserverPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "mysqlServer"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DBforMySQL/servers', parameters('mysqlserverName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforMySQL/servers', parameters('mysqlserverName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdMySqlServer')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('mysqlserverPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('mysqlserverPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdMySqlServer')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('mysqlserverPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "mysqlName": {
+              "type": "string",
+              "value": "[parameters('mysqlserverName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('sqlFlavour'), 'maria')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "mariadb001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "mariadbName": {
+            "value": "[variables('mariadb001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "administratorUsername": {
+            "value": "[variables('administratorUsername')]"
+          },
+          "administratorPassword": {
+            "value": "[parameters('administratorPassword')]"
+          },
+          "privateDnsZoneIdMariaDb": {
+            "value": "[parameters('privateDnsZoneIdMariaDb')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "8277887320269602060"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "mariadbName": {
+              "type": "string"
+            },
+            "administratorUsername": {
+              "type": "string",
+              "defaultValue": "SqlMainUser"
+            },
+            "administratorPassword": {
+              "type": "secureString"
+            },
+            "privateDnsZoneIdMariaDb": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "mariadbPrivateEndpointName": "[format('{0}-private-endpoint', parameters('mariadbName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforMariaDB/servers",
+              "apiVersion": "2018-06-01",
+              "name": "[parameters('mariadbName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "GP_Gen5_2",
+                "family": "Gen5",
+                "tier": "GeneralPurpose",
+                "capacity": 2,
+                "size": "5120"
+              },
+              "properties": {
+                "createMode": "Default",
+                "administratorLogin": "[parameters('administratorUsername')]",
+                "administratorLoginPassword": "[parameters('administratorPassword')]",
+                "infrastructureEncryption": "Disabled",
+                "minimalTlsVersion": "TLS1_2",
+                "publicNetworkAccess": "Disabled",
+                "sslEnforcement": "Enabled",
+                "storageProfile": {
+                  "backupRetentionDays": 7,
+                  "geoRedundantBackup": "Enabled",
+                  "storageAutogrow": "Enabled",
+                  "storageMB": 5120
+                },
+                "version": "10.3"
+              }
+            },
+            {
+              "type": "Microsoft.DBforMariaDB/servers/databases",
+              "apiVersion": "2018-06-01",
+              "name": "[format('{0}/{1}', parameters('mariadbName'), 'Database001')]",
+              "properties": {
+                "charset": "utf8",
+                "collation": "utf8_general_ci"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforMariaDB/servers', parameters('mariadbName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('mariadbPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('mariadbPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "mariadbServer"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DBforMariaDB/servers', parameters('mariadbName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforMariaDB/servers', parameters('mariadbName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdMariaDb')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('mariadbPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('mariadbPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdMariaDb')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('mariadbPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "mariadbName": {
+              "type": "string",
+              "value": "[parameters('mariadbName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('sqlFlavour'), 'postgre')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "postgresql001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "postgresqlName": {
+            "value": "[variables('potsgresql001Name')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "subnetId": {
+            "value": "[parameters('subnetId')]"
+          },
+          "administratorUsername": {
+            "value": "[variables('administratorUsername')]"
+          },
+          "administratorPassword": {
+            "value": "[parameters('administratorPassword')]"
+          },
+          "postgresqlAdminGroupName": {
+            "value": ""
+          },
+          "postgresqlAdminGroupObjectID": {
+            "value": ""
+          },
+          "privateDnsZoneIdPostgreSql": {
+            "value": "[parameters('privateDnsZoneIdPostgreSql')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "5988095410269889096"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "postgresqlName": {
+              "type": "string"
+            },
+            "administratorUsername": {
+              "type": "string",
+              "defaultValue": "SqlMainUser"
+            },
+            "administratorPassword": {
+              "type": "secureString"
+            },
+            "postgresqlAdminGroupName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "postgresqlAdminGroupObjectID": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "privateDnsZoneIdPostgreSql": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "postgresqlPrivateEndpointName": "[format('{0}-private-endpoint', parameters('postgresqlName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforPostgreSQL/servers",
+              "apiVersion": "2017-12-01",
+              "name": "[parameters('postgresqlName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "sku": {
+                "name": "GP_Gen5_2",
+                "family": "Gen5",
+                "tier": "GeneralPurpose",
+                "capacity": 2,
+                "size": "5120"
+              },
+              "properties": {
+                "createMode": "Default",
+                "administratorLogin": "[parameters('administratorUsername')]",
+                "administratorLoginPassword": "[parameters('administratorPassword')]",
+                "infrastructureEncryption": "Disabled",
+                "minimalTlsVersion": "TLS1_2",
+                "publicNetworkAccess": "Disabled",
+                "sslEnforcement": "Enabled",
+                "storageProfile": {
+                  "backupRetentionDays": 7,
+                  "geoRedundantBackup": "Enabled",
+                  "storageAutogrow": "Enabled",
+                  "storageMB": 5120
+                },
+                "version": "11"
+              }
+            },
+            {
+              "condition": "[and(not(empty(parameters('postgresqlAdminGroupName'))), not(empty(parameters('postgresqlAdminGroupObjectID'))))]",
+              "type": "Microsoft.DBforPostgreSQL/servers/administrators",
+              "apiVersion": "2017-12-01",
+              "name": "[format('{0}/{1}', parameters('postgresqlName'), 'activeDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "[parameters('postgresqlAdminGroupName')]",
+                "sid": "[parameters('postgresqlAdminGroupObjectID')]",
+                "tenantId": "[subscription().tenantId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('postgresqlName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DBforPostgreSQL/servers/databases",
+              "apiVersion": "2017-12-01",
+              "name": "[format('{0}/{1}', parameters('postgresqlName'), 'Database001')]",
+              "properties": {
+                "charset": "utf8",
+                "collation": "English_United States.1252"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('postgresqlName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2020-11-01",
+              "name": "[variables('postgresqlPrivateEndpointName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "manualPrivateLinkServiceConnections": [],
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('postgresqlPrivateEndpointName')]",
+                    "properties": {
+                      "groupIds": [
+                        "postgresqlServer"
+                      ],
+                      "privateLinkServiceId": "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('postgresqlName'))]",
+                      "requestMessage": ""
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('postgresqlName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('privateDnsZoneIdPostgreSql')))]",
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2020-11-01",
+              "name": "[format('{0}/{1}', variables('postgresqlPrivateEndpointName'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-arecord', variables('postgresqlPrivateEndpointName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneIdPostgreSql')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('postgresqlPrivateEndpointName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "postgresqlName": {
+              "type": "string",
+              "value": "[parameters('postgresqlName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('enableMonitoring')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "logAnalytics001",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          },
+          "logAnalyticsName": {
+            "value": "[variables('logAnalytics001Name')]"
+          },
+          "processingService": {
+            "value": "[parameters('processingService')]"
+          },
+          "sqlFlavour": {
+            "value": "[parameters('sqlFlavour')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "11124062553816241397"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "processingService": {
+              "type": "string"
+            },
+            "logAnalyticsName": {
+              "type": "string"
+            },
+            "sqlFlavour": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "dataFactoryAnalyticsName": "[format('AzureDataFactoryAnalytics({0})', parameters('logAnalyticsName'))]",
+            "sqlAnalyticsName": "[format('AzureSQLAnalytics({0})', parameters('logAnalyticsName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2020-10-01",
+              "name": "[parameters('logAnalyticsName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "features": {},
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled",
+                "retentionInDays": 120,
+                "sku": {
+                  "name": "PerGB2018"
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'dataFactory')]",
+              "type": "Microsoft.OperationsManagement/solutions",
+              "apiVersion": "2015-11-01-preview",
+              "name": "[variables('dataFactoryAnalyticsName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "plan": {
+                "name": "[variables('dataFactoryAnalyticsName')]",
+                "product": "OMSGallery/AzureDataFactoryAnalytics",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+              },
+              "properties": {
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+              ]
+            },
+            {
+              "condition": "[equals(parameters('sqlFlavour'), 'sql')]",
+              "type": "Microsoft.OperationsManagement/solutions",
+              "apiVersion": "2015-11-01-preview",
+              "name": "[variables('sqlAnalyticsName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "plan": {
+                "name": "[variables('sqlAnalyticsName')]",
+                "product": "OMSGallery/AzureSQLAnalytics",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+              },
+              "properties": {
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "logAnalyticsWorkspaceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+            },
+            "logAnalyticsWorkspaceName": {
+              "type": "string",
+              "value": "[parameters('logAnalyticsName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('enableMonitoring')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "diagnosticSettings",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "datafactoryName": {
+            "value": "[if(equals(parameters('processingService'), 'dataFactory'), reference(resourceId('Microsoft.Resources/deployments', 'datafactory001'), '2020-10-01').outputs.dataFactoryName.value, '')]"
+          },
+          "logAnalytics001Name": {
+            "value": "[if(parameters('enableMonitoring'), reference(resourceId('Microsoft.Resources/deployments', 'logAnalytics001'), '2020-10-01').outputs.logAnalyticsWorkspaceName.value, '')]"
+          },
+          "processingService": {
+            "value": "[parameters('processingService')]"
+          },
+          "sqlFlavour": {
+            "value": "[parameters('sqlFlavour')]"
+          },
+          "mysql001Name": {
+            "value": "[if(equals(parameters('sqlFlavour'), 'mysql'), reference(resourceId('Microsoft.Resources/deployments', 'mysql001'), '2020-10-01').outputs.mysqlName.value, '')]"
+          },
+          "sqlServerName": {
+            "value": "[if(equals(parameters('sqlFlavour'), 'sql'), reference(resourceId('Microsoft.Resources/deployments', 'sql001'), '2020-10-01').outputs.sqlserverName.value, '')]"
+          },
+          "mariadb001Name": {
+            "value": "[if(equals(parameters('sqlFlavour'), 'maria'), reference(resourceId('Microsoft.Resources/deployments', 'mariadb001'), '2020-10-01').outputs.mariadbName.value, '')]"
+          },
+          "potsgresql001Name": {
+            "value": "[if(equals(parameters('sqlFlavour'), 'postgre'), reference(resourceId('Microsoft.Resources/deployments', 'postgresql001'), '2020-10-01').outputs.postgresqlName.value, '')]"
+          },
+          "enableCosmos": {
+            "value": "[parameters('enableCosmos')]"
+          },
+          "cosmosdb001Name": {
+            "value": "[if(parameters('enableCosmos'), reference(resourceId('Microsoft.Resources/deployments', 'cosmos001'), '2020-10-01').outputs.cosmosName.value, '')]"
+          },
+          "synapseName": {
+            "value": "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseName.value, '')]"
+          },
+          "synapseSqlPools": {
+            "value": [
+              "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseSqlPool001Name.value, null())]"
+            ]
+          },
+          "synapseSparkPools": {
+            "value": [
+              "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseBigDataPool001Name.value, null())]"
+            ]
+          },
+          "sqlServerDatabases": {
+            "value": [
+              "[if(equals(parameters('sqlFlavour'), 'sql'), reference(resourceId('Microsoft.Resources/deployments', 'sql001'), '2020-10-01').outputs.sqlserverDatabase001Name.value, null())]"
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "17672663804510882985"
+            }
+          },
+          "parameters": {
+            "logAnalytics001Name": {
+              "type": "string"
+            },
+            "datafactoryName": {
+              "type": "string"
+            },
+            "processingService": {
+              "type": "string"
+            },
+            "synapseName": {
+              "type": "string"
+            },
+            "synapseSqlPools": {
+              "type": "array"
+            },
+            "synapseSparkPools": {
+              "type": "array"
+            },
+            "sqlServerDatabases": {
+              "type": "array"
+            },
+            "sqlServerName": {
+              "type": "string"
+            },
+            "mysql001Name": {
+              "type": "string"
+            },
+            "mariadb001Name": {
+              "type": "string"
+            },
+            "potsgresql001Name": {
+              "type": "string"
+            },
+            "cosmosdb001Name": {
+              "type": "string"
+            },
+            "sqlFlavour": {
+              "type": "string"
+            },
+            "enableCosmos": {
+              "type": "bool"
+            }
+          },
+          "variables": {
+            "synapseSqlPoolsCount": "[length(parameters('synapseSqlPools'))]",
+            "synapseSparkPoolCount": "[length(parameters('synapseSparkPools'))]",
+            "sqlServerDatabasesCount": "[length(parameters('sqlServerDatabases'))]"
+          },
+          "resources": [
+            {
+              "condition": "[equals(parameters('processingService'), 'dataFactory')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DataFactory/factories/{0}', parameters('datafactoryName'))]",
+              "name": "[format('diagnostic-{0}', parameters('datafactoryName'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "PipelineRuns",
+                    "enabled": true
+                  },
+                  {
+                    "category": "TriggerRuns",
+                    "enabled": true
+                  },
+                  {
+                    "category": "ActivityRuns",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'synapse')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Synapse/workspaces/{0}', parameters('synapseName'))]",
+              "name": "[format('diagnostic-{0}', parameters('synapseName'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "SynapseRbacOperations",
+                    "enabled": true
+                  },
+                  {
+                    "category": "GatewayApiRequests",
+                    "enabled": true
+                  },
+                  {
+                    "category": "BuiltinSqlReqsEnded",
+                    "enabled": true
+                  },
+                  {
+                    "category": "IntegrationPipelineRuns",
+                    "enabled": true
+                  },
+                  {
+                    "category": "IntegrationActivityRuns",
+                    "enabled": true
+                  },
+                  {
+                    "category": "IntegrationTriggerRuns",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'synapse')]",
+              "copy": {
+                "name": "diagnosticSetting003",
+                "count": "[length(range(0, variables('synapseSqlPoolsCount')))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Synapse/workspaces/{0}/sqlPools/{1}', parameters('synapseName'), parameters('synapseSqlPools')[range(0, variables('synapseSqlPoolsCount'))[copyIndex()]])]",
+              "name": "[format('diagnostic-{0}-{1}', parameters('synapseName'), parameters('synapseSqlPools')[range(0, variables('synapseSqlPoolsCount'))[copyIndex()]])]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "SqlRequests",
+                    "enabled": true
+                  },
+                  {
+                    "category": "RequestSteps",
+                    "enabled": true
+                  },
+                  {
+                    "category": "ExecRequests",
+                    "enabled": true
+                  },
+                  {
+                    "category": "DmsWorkers",
+                    "enabled": true
+                  },
+                  {
+                    "category": "Waits",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'synapse')]",
+              "copy": {
+                "name": "diagnosticSetting004",
+                "count": "[length(range(0, variables('synapseSparkPoolCount')))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('synapseName'), parameters('synapseSparkPools')[range(0, variables('synapseSparkPoolCount'))[copyIndex()]])]",
+              "name": "[format('diagnostic-{0}-{1}', parameters('synapseName'), parameters('synapseSparkPools')[range(0, variables('synapseSparkPoolCount'))[copyIndex()]])]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "BigDataPoolAppsEnded",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('sqlFlavour'), 'mysql')]",
+              "copy": {
+                "name": "diagnosticSetting005",
+                "count": "[length(range(0, variables('sqlServerDatabasesCount')))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('sqlServerName'), parameters('sqlServerDatabases')[range(0, variables('sqlServerDatabasesCount'))[copyIndex()]])]",
+              "name": "[format('diagnostic-{0}', parameters('sqlServerDatabases')[range(0, variables('sqlServerDatabasesCount'))[copyIndex()]])]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "SQLInsights",
+                    "enabled": true
+                  },
+                  {
+                    "category": "Errors",
+                    "enabled": true
+                  },
+                  {
+                    "category": "Timeouts",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "Basic",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('sqlFlavour'), 'mysql')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DBforMySQL/servers/{0}', parameters('mysql001Name'))]",
+              "name": "[format('diagnostic-{0}', parameters('mysql001Name'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "MySqlSlowLogs",
+                    "enabled": true
+                  },
+                  {
+                    "category": "MySqlAuditLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('sqlFlavour'), 'maria')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DBforMariaDB/servers/{0}', parameters('mariadb001Name'))]",
+              "name": "[format('diagnostic-{0}', parameters('mariadb001Name'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "MySqlSlowLogs",
+                    "enabled": true
+                  },
+                  {
+                    "category": "MySqlAuditLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[equals(parameters('sqlFlavour'), 'postgre')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DBforPostgreSQL/servers/{0}', parameters('potsgresql001Name'))]",
+              "name": "[format('diagnostic-{0}', parameters('potsgresql001Name'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "PostgreSQLLogs",
+                    "enabled": true
+                  },
+                  {
+                    "category": "QueryStoreRuntimeStatistics",
+                    "enabled": true
+                  },
+                  {
+                    "category": "QueryStoreWaitStatistics",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            {
+              "condition": "[parameters('enableCosmos')]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosdb001Name'))]",
+              "name": "[format('diagnostic-{0}', parameters('cosmosdb001Name'))]",
+              "properties": {
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalytics001Name'))]",
+                "logs": [
+                  {
+                    "category": "DataPlaneRequests",
+                    "enabled": true
+                  },
+                  {
+                    "category": "ControlPlaneRequests",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "Requests",
+                    "enabled": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmos001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'datafactory001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'logAnalytics001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'mariadb001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'mysql001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'postgresql001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'sql001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'synapse001')]"
+      ]
+    },
+    {
+      "condition": "[and(not(empty(parameters('dataProductTeamEmail'))), parameters('enableMonitoring'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "alerts",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "adfPipelineFailedAlertName": {
+            "value": "[variables('adfPipelineFailedAlertName')]"
+          },
+          "datafactoryScope": {
+            "value": "[if(equals(parameters('processingService'), 'dataFactory'), reference(resourceId('Microsoft.Resources/deployments', 'datafactory001'), '2020-10-01').outputs.dataFactoryId.value, '')]"
+          },
+          "dataFactoryEmailActionGroup": {
+            "value": "[variables('dataFactoryEmailActionGroup')]"
+          },
+          "dataProductTeamEmail": {
+            "value": "[parameters('dataProductTeamEmail')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "processingService": {
+            "value": "[parameters('processingService')]"
+          },
+          "synapsePipelineFailedAlertName": {
+            "value": "[variables('synapsePipelineFailedAlertName')]"
+          },
+          "cosmosRequestLimitedAlertName": {
+            "value": "[variables('cosmosRequestLimitedAlertName')]"
+          },
+          "synapseScope": {
+            "value": "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseId.value, '')]"
+          },
+          "enableCosmos": {
+            "value": "[parameters('enableCosmos')]"
+          },
+          "cosmosDBScope": {
+            "value": "[if(parameters('enableCosmos'), reference(resourceId('Microsoft.Resources/deployments', 'cosmos001'), '2020-10-01').outputs.cosmosId.value, '')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "8256106526304999248"
+            }
+          },
+          "parameters": {
+            "adfPipelineFailedAlertName": {
+              "type": "string"
+            },
+            "datafactoryScope": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "processingService": {
+              "type": "string"
+            },
+            "synapsePipelineFailedAlertName": {
+              "type": "string"
+            },
+            "synapseScope": {
+              "type": "string"
+            },
+            "dataFactoryEmailActionGroup": {
+              "type": "string"
+            },
+            "dataProductTeamEmail": {
+              "type": "string"
+            },
+            "cosmosRequestLimitedAlertName": {
+              "type": "string"
+            },
+            "cosmosDBScope": {
+              "type": "string"
+            },
+            "enableCosmos": {
+              "type": "bool"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/actionGroups",
+              "apiVersion": "2021-09-01",
+              "name": "[parameters('dataFactoryEmailActionGroup')]",
+              "location": "global",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "groupShortName": "emailgroup",
+                "emailReceivers": [
+                  {
+                    "emailAddress": "[parameters('dataProductTeamEmail')]",
+                    "name": "emailaction",
+                    "useCommonAlertSchema": true
+                  }
+                ],
+                "enabled": true
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'dataFactory')]",
+              "type": "Microsoft.Insights/metricAlerts",
+              "apiVersion": "2018-03-01",
+              "name": "[parameters('adfPipelineFailedAlertName')]",
+              "location": "global",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "actions": [
+                  {
+                    "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+                  }
+                ],
+                "autoMitigate": false,
+                "criteria": {
+                  "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+                  "allOf": [
+                    {
+                      "threshold": 1,
+                      "name": "Metric1",
+                      "metricNamespace": "Microsoft.DataFactory/factories",
+                      "metricName": "PipelineFailedRuns",
+                      "operator": "GreaterThanOrEqual",
+                      "timeAggregation": "Total",
+                      "criterionType": "StaticThresholdCriterion"
+                    }
+                  ]
+                },
+                "description": "ADF pipeline failed",
+                "enabled": true,
+                "evaluationFrequency": "PT1M",
+                "scopes": [
+                  "[parameters('datafactoryScope')]"
+                ],
+                "severity": 1,
+                "targetResourceRegion": "[parameters('location')]",
+                "targetResourceType": "Microsoft.DataFactory/factories",
+                "windowSize": "PT5M"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+              ]
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'synapse')]",
+              "type": "Microsoft.Insights/metricAlerts",
+              "apiVersion": "2018-03-01",
+              "name": "[parameters('synapsePipelineFailedAlertName')]",
+              "location": "global",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "actions": [
+                  {
+                    "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+                  }
+                ],
+                "autoMitigate": false,
+                "criteria": {
+                  "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+                  "allOf": [
+                    {
+                      "threshold": 1,
+                      "name": "Metric1",
+                      "metricNamespace": "Microsoft.Synapse/workspaces",
+                      "metricName": "IntegrationPipelineRunsEnded",
+                      "operator": "GreaterThanOrEqual",
+                      "timeAggregation": "Total",
+                      "criterionType": "StaticThresholdCriterion",
+                      "dimensions": [
+                        {
+                          "name": "Result",
+                          "operator": "Include",
+                          "values": [
+                            "Failed"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "description": "Synapse pipeline failed",
+                "enabled": true,
+                "evaluationFrequency": "PT1M",
+                "scopes": [
+                  "[parameters('synapseScope')]"
+                ],
+                "severity": 1,
+                "targetResourceRegion": "[parameters('location')]",
+                "targetResourceType": "Microsoft.Synapse/workspaces",
+                "windowSize": "PT5M"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('enableCosmos')]",
+              "type": "Microsoft.Insights/metricAlerts",
+              "apiVersion": "2018-03-01",
+              "name": "[parameters('cosmosRequestLimitedAlertName')]",
+              "location": "global",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "severity": 1,
+                "enabled": true,
+                "scopes": [
+                  "[parameters('cosmosDBScope')]"
+                ],
+                "evaluationFrequency": "PT1M",
+                "windowSize": "PT5M",
+                "criteria": {
+                  "allOf": [
+                    {
+                      "threshold": 100,
+                      "name": "Metric1",
+                      "metricNamespace": "Microsoft.DocumentDB/databaseAccounts",
+                      "metricName": "TotalRequestUnits",
+                      "dimensions": [
+                        {
+                          "name": "StatusCode",
+                          "operator": "Include",
+                          "values": [
+                            "429"
+                          ]
+                        }
+                      ],
+                      "operator": "GreaterThan",
+                      "timeAggregation": "Total",
+                      "criterionType": "StaticThresholdCriterion"
+                    }
+                  ],
+                  "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": false,
+                "targetResourceType": "Microsoft.DocumentDB/databaseAccounts",
+                "actions": [
+                  {
+                    "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/actionGroups', parameters('dataFactoryEmailActionGroup'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'cosmos001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'datafactory001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'synapse001')]"
+      ]
+    },
+    {
+      "condition": "[parameters('enableMonitoring')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "dashboard",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "dashboardName": {
+            "value": "[variables('dashboardName')]"
+          },
+          "datafactoryName": {
+            "value": "[if(equals(parameters('processingService'), 'dataFactory'), reference(resourceId('Microsoft.Resources/deployments', 'datafactory001'), '2020-10-01').outputs.dataFactoryName.value, '')]"
+          },
+          "datafactoryScope": {
+            "value": "[if(equals(parameters('processingService'), 'dataFactory'), reference(resourceId('Microsoft.Resources/deployments', 'datafactory001'), '2020-10-01').outputs.dataFactoryId.value, '')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "processingService": {
+            "value": "[parameters('processingService')]"
+          },
+          "synapse001Name": {
+            "value": "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseName.value, '')]"
+          },
+          "synapseScope": {
+            "value": "[if(equals(parameters('processingService'), 'synapse'), reference(resourceId('Microsoft.Resources/deployments', 'synapse001'), '2020-10-01').outputs.synapseId.value, '')]"
+          },
+          "tags": {
+            "value": "[variables('tagsJoined')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.5.6.12127",
+              "templateHash": "7422181253017355270"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "dashboardName": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "datafactoryScope": {
+              "type": "string"
+            },
+            "datafactoryName": {
+              "type": "string"
+            },
+            "processingService": {
+              "type": "string"
+            },
+            "synapseScope": {
+              "type": "string"
+            },
+            "synapse001Name": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "condition": "[equals(parameters('processingService'), 'dataFactory')]",
+              "type": "Microsoft.Portal/dashboards",
+              "apiVersion": "2020-09-01-preview",
+              "name": "[format('{0}-dataFactory', parameters('dashboardName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "lenses": [
+                  {
+                    "order": 0,
+                    "parts": [
+                      {
+                        "position": {
+                          "x": 0,
+                          "y": 0,
+                          "rowSpan": 4,
+                          "colSpan": 6
+                        },
+                        "metadata": {
+                          "inputs": [
+                            {
+                              "name": "options",
+                              "isOptional": true
+                            },
+                            {
+                              "name": "sharedTimeRange",
+                              "isOptional": true
+                            }
+                          ],
+                          "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                          "settings": {
+                            "content": {
+                              "options": {
+                                "chart": {
+                                  "metrics": [
+                                    {
+                                      "resourceMetadata": {
+                                        "id": "[parameters('datafactoryScope')]"
+                                      },
+                                      "name": "PipelineFailedRuns",
+                                      "aggregationType": 1,
+                                      "namespace": "microsoft.datafactory/factories",
+                                      "metricVisualization": {
+                                        "displayName": "Failed pipeline runs metrics",
+                                        "resourceDisplayName": "[parameters('datafactoryName')]"
+                                      }
+                                    }
+                                  ],
+                                  "title": "[format('Count Failed activity runs metrics for {0}', parameters('datafactoryName'))]",
+                                  "titleKind": 1,
+                                  "visualization": {
+                                    "chartType": 2,
+                                    "legendVisualization": {
+                                      "isVisible": true,
+                                      "position": 2,
+                                      "hideSubtitle": false
+                                    },
+                                    "axisVisualization": {
+                                      "x": {
+                                        "isVisible": true,
+                                        "axisType": 2
+                                      },
+                                      "y": {
+                                        "isVisible": true,
+                                        "axisType": 1
+                                      }
+                                    },
+                                    "disablePinning": true
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "position": {
+                          "x": 6,
+                          "y": 0,
+                          "rowSpan": 4,
+                          "colSpan": 6
+                        },
+                        "metadata": {
+                          "inputs": [
+                            {
+                              "name": "options",
+                              "isOptional": true
+                            },
+                            {
+                              "name": "sharedTimeRange",
+                              "isOptional": true
+                            }
+                          ],
+                          "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                          "settings": {
+                            "content": {
+                              "options": {
+                                "chart": {
+                                  "metrics": [
+                                    {
+                                      "resourceMetadata": {
+                                        "id": "[parameters('datafactoryScope')]"
+                                      },
+                                      "name": "PipelineSucceededRuns",
+                                      "aggregationType": 1,
+                                      "namespace": "microsoft.datafactory/factories",
+                                      "metricVisualization": {
+                                        "displayName": "Succeeded pipeline runs metrics",
+                                        "resourceDisplayName": "[parameters('datafactoryName')]"
+                                      }
+                                    }
+                                  ],
+                                  "title": "[format('Sum Succeeded pipeline runs metrics for {0}', parameters('datafactoryName'))]",
+                                  "titleKind": 1,
+                                  "visualization": {
+                                    "chartType": 2,
+                                    "legendVisualization": {
+                                      "isVisible": true,
+                                      "position": 2,
+                                      "hideSubtitle": false
+                                    },
+                                    "axisVisualization": {
+                                      "x": {
+                                        "isVisible": true,
+                                        "axisType": 2
+                                      },
+                                      "y": {
+                                        "isVisible": true,
+                                        "axisType": 1
+                                      }
+                                    },
+                                    "disablePinning": true
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "metadata": {
+                  "model": {}
+                }
+              }
+            },
+            {
+              "condition": "[equals(parameters('processingService'), 'synapse')]",
+              "type": "Microsoft.Portal/dashboards",
+              "apiVersion": "2020-09-01-preview",
+              "name": "[format('{0}-synapse', parameters('dashboardName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "lenses": [
+                  {
+                    "order": 0,
+                    "parts": [
+                      {
+                        "position": {
+                          "x": 0,
+                          "y": 0,
+                          "rowSpan": 4,
+                          "colSpan": 6
+                        },
+                        "metadata": {
+                          "inputs": [
+                            {
+                              "name": "options",
+                              "isOptional": true
+                            },
+                            {
+                              "name": "sharedTimeRange",
+                              "isOptional": true
+                            }
+                          ],
+                          "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                          "settings": {
+                            "content": {
+                              "options": {
+                                "chart": {
+                                  "metrics": [
+                                    {
+                                      "resourceMetadata": {
+                                        "id": "[parameters('synapseScope')]"
+                                      },
+                                      "name": "IntegrationPipelineRunsEnded",
+                                      "aggregationType": 1,
+                                      "namespace": "microsoft.synapse/workspaces",
+                                      "metricVisualization": {
+                                        "displayName": "Pipeline runs ended",
+                                        "resourceDisplayName": "[parameters('synapse001Name')]"
+                                      }
+                                    }
+                                  ],
+                                  "title": "[format('Sum Pipeline runs ended for {0}', parameters('synapse001Name'))]",
+                                  "titleKind": 1,
+                                  "visualization": {
+                                    "chartType": 2,
+                                    "legendVisualization": {
+                                      "isVisible": true,
+                                      "position": 2,
+                                      "hideSubtitle": false
+                                    },
+                                    "axisVisualization": {
+                                      "x": {
+                                        "isVisible": true,
+                                        "axisType": 2
+                                      },
+                                      "y": {
+                                        "isVisible": true,
+                                        "axisType": 1
+                                      }
+                                    },
+                                    "disablePinning": true
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "position": {
+                          "x": 6,
+                          "y": 0,
+                          "rowSpan": 4,
+                          "colSpan": 6
+                        },
+                        "metadata": {
+                          "inputs": [
+                            {
+                              "name": "options",
+                              "isOptional": true
+                            },
+                            {
+                              "name": "sharedTimeRange",
+                              "isOptional": true
+                            }
+                          ],
+                          "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                          "settings": {
+                            "content": {
+                              "options": {
+                                "chart": {
+                                  "metrics": [
+                                    {
+                                      "resourceMetadata": {
+                                        "id": "[parameters('synapseScope')]"
+                                      },
+                                      "name": "IntegrationActivityRunsEnded",
+                                      "aggregationType": 1,
+                                      "namespace": "microsoft.synapse/workspaces",
+                                      "metricVisualization": {
+                                        "displayName": "Activity runs ended",
+                                        "resourceDisplayName": "[parameters('synapse001Name')]"
+                                      }
+                                    }
+                                  ],
+                                  "title": "[format('Sum Activity runs ended for {0}', parameters('synapse001Name'))]",
+                                  "titleKind": 1,
+                                  "visualization": {
+                                    "chartType": 2,
+                                    "legendVisualization": {
+                                      "isVisible": true,
+                                      "position": 2,
+                                      "hideSubtitle": false
+                                    },
+                                    "axisVisualization": {
+                                      "x": {
+                                        "isVisible": true,
+                                        "axisType": 2
+                                      },
+                                      "y": {
+                                        "isVisible": true,
+                                        "axisType": 1
+                                      }
+                                    },
+                                    "disablePinning": true
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "metadata": {
+                  "model": {}
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'datafactory001')]",
+        "[resourceId('Microsoft.Resources/deployments', 'synapse001')]"
+      ]
+    }
+  ]
+}
